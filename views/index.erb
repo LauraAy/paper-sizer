@@ -1,0 +1,34 @@
+<h1>Enter your paper details</h1>
+
+<form action="/sizeit" method="post">
+  <div class="form-group">
+    <label for="paper_height">Paper height (mm)</label>
+    <input type="text" class="form-control" id="paper_height" name="paper_height" placeholder="A number">
+  </div>
+
+  <div class="form-group">
+    <label for="paper_width">Paper width (mm)</label>
+    <input type="text" class="form-control" id="paper_width" name="paper_width" placeholder="A number">
+  </div>
+
+  <div class="form-group">
+    <label for="paper_width">Laid lines</label>
+    <select class="form-control" id="laid_lines" name="laid_lines">
+      <option></option>
+      <option value="vertical">Vertical</option>
+      <option value="horizontal">Horizontal</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="paper_width">Chain lines</label>
+    <select class="form-control" id="chain_lines" name="chain_lines">
+      <option></option>
+      <option value="vertical">Vertical</option>
+      <option value="horizontal">Horizontal</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+
+</form>
