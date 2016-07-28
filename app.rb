@@ -1,5 +1,7 @@
 # If you're using bundler, you will need to add this
+$LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'bundler/setup'
+require 'lib/paper_sizer'
 
 require 'sinatra'
 
@@ -8,5 +10,12 @@ get '/' do
 end
 
 post '/sizeit' do
-  erb :sizeit, locals: params
+  height = params["paper_height"]
+  width  = params["paper_width"]
+  chain  = params["chain_lines"]
+  laid   = params["laid_lines"]
+  sizer = PaperSizer.new
+  result = sizer.calculate height, width, chain, laid
+  params["result"] = result
+  erb :sizeit, locals: { "result": result }
 end
