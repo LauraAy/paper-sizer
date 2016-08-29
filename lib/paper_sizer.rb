@@ -1,3 +1,5 @@
+# require 'lib/paper_type'
+
 class PaperType < Array
   def output_name
     name_string = (self[0].to_s + ' ' + self[1].to_s).upcase.gsub('_' , '-').sub('SIXTEEN-MO' , '16mo').sub((/MEDIAN-[12]/), 'MEDIAN')
@@ -5,6 +7,13 @@ class PaperType < Array
   end
 end
 
+# TODO
+#
+# - uncomment require above
+# - use lib/paper_type class
+# - use constant in PaperSizer
+# - use PaperSizer#possible_matches instead of $possible_matches
+# - remove all globals
 
 
 $paper_sizes =
@@ -25,8 +34,8 @@ $paper_sizes =
   PaperType.new([:agenda_quarto, :median])       => {:height_max => 35.0, :height_min => 31.1, :width_max => 12.5, :width_min =>  9.0},
   PaperType.new([:agenda_quarto, :chancery])     => {:height_max => 31.0, :height_min => 25.5, :width_max => 11.3, :width_min =>  7.8},
   PaperType.new([:agenda_quarto, :mezzo_median]) => {:height_max => 25.6, :height_min => 24.0, :width_max => 9.5, :width_min =>   7.7},
-  PaperType.new([:quarto, :super_royal])  => {:height_max => 31.0, :height_min => 25.1, :width_max => 22.7, :width_min => 21.0},
-  PaperType.new([:quarto, :royal])        => {:height_max => 31.0, :height_min => 25.1, :width_max => 21.0, :width_min => 17.5},
+  PaperType.new([:quarto, :super_royal])         => {:height_max => 31.0, :height_min => 25.1, :width_max => 22.7, :width_min => 21.0},
+  PaperType.new([:quarto, :royal])               => {:height_max => 31.0, :height_min => 25.1, :width_max => 21.0, :width_min => 17.5},
   PaperType.new([:quarto, :super_median]) => {:height_max => 25.0, :height_min => 22.1, :width_max => 18.5, :width_min => 17.5},
   PaperType.new([:quarto, :median])       => {:height_max => 25.0, :height_min => 22.1, :width_max => 17.4, :width_min => 15.6},
   PaperType.new([:quarto, :chancery])     => {:height_max => 22.5, :height_min => 15.5, :width_max => 15.5, :width_min => 12.7},
@@ -48,16 +57,27 @@ $paper_sizes =
   $possible_matches = [] #[PaperType.new(['ok', 'dok'])]
 
 class PaperSizer
+
+  PAPER_SIZES = [
+    PaperType.new(format: :folio, name: :imperial, height_max: 50.0, height_min: 45.6, width_max: 35.0, width_min: 31.1)
+
+  ]
+
+  def possible_matches
+    @possible_matches ||= []
+  end
+
+
   def find_matches height, width
     matches = []
     $paper_sizes.each do |paper_size|
       paper_size[1][:height_range] = (paper_size[1][:height_min] .. paper_size[1][:height_max])
       paper_size[1][:width_range]  = (paper_size[1][:width_min] .. paper_size[1][:width_max])
-      if paper_size[1][:height_range].include? height.to_f and paper_size[1][:width_range].include? width.to_f
-        $possible_matches.push paper_size[0]
+      if paper_size[1][:height_range].include?(height.to_f) && paper_size[1][:width_range].include?(width.to_f)
+        possible_matches.push paper_size[0]
       end
     end
-    return $possible_matches
+    possible_matches
   end
 
   def query_lines chain
@@ -75,7 +95,7 @@ class PaperSizer
         end
       end
     end
-    return $possible_matches
+    $possible_matches
   end
 
   def query_edge deckle
@@ -85,7 +105,7 @@ class PaperSizer
         $possible_matches -= [match]
       end
     end
-    return $possible_matches
+    $possible_matches
   end
 
   def calculate_percent height, width
@@ -125,6 +145,6 @@ class PaperSizer
         articles.push 'a'
       end
     end
-    return "There's about #{articles[0]} #{percent_score[0]}% chance that it's #{$possible_matches[0].output_name} and about #{articles[1]} #{percent_score[1]}% chance that it's #{$possible_matches[1].output_name}."
+    "There's about #{articles[0]} #{percent_score[0]}% chance that it's #{$possible_matches[0].output_name} and about #{articles[1]} #{percent_score[1]}% chance that it's #{$possible_matches[1].output_name}."
   end
 end
