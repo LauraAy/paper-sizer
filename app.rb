@@ -20,21 +20,20 @@ post '/sizeit' do
   if matches.length == 0
     result = "Those dimensions don't match any known paper size."
   elsif matches.length  == 1
-    result = matches[0].ouput_name
+    result = "#{matches[0]}"
   else
-    matches_lines = sizer.query_lines chain
-    if matches_lines.length == 1
-      result = matches_lines[0].output_name
+    matches = sizer.query_lines chain
+    if matches.length == 1
+      result = "#{matches[0]}"
     else
-      matches_edge = sizer.query_edge deckle
-      if matches_edge.length ==1
-        result = matches_edge[0].output_name
+      matches = sizer.query_edge deckle
+      if matches.length == 1
+        result = "#{matches[0]}"
       else
-        result = sizer.calculate_percent height, width
+        result = sizer.compare_matches
       end
     end
   end
-
   params["result"] = result
   erb :sizeit, locals: params
 end
