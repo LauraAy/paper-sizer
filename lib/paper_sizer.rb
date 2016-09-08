@@ -1,19 +1,5 @@
 require 'lib/paper_type'
 
-
-
-# TODO
-#
-# - uncomment require above
-# - use lib/paper_type class
-# - use constant in PaperSizer
-# - use PaperSizer#possible_matches instead of $possible_matches
-# - remove all globals
-
-
-
-
-
 class PaperSizer
 
   PAPER_SIZES =
@@ -64,24 +50,24 @@ class PaperSizer
       height_range = (paper_size.height_min .. paper_size.height_max)
       width_range  = (paper_size.width_min  .. paper_size.width_max)
       if height_range.include?(height.to_f) && width_range.include?(width.to_f)
-        @possible_matches += [paper_size]
+        possible_matches << paper_size
       end
     end
     possible_matches
   end
 
   def query_lines chain
-  format_division = [[:folio, :agenda_quarto, :octavo] , [:quarto, :sixteen_mo ]]
-    if chain.include? 'v'
+    format_groups = [[:folio, :agenda_quarto, :octavo] , [:quarto, :sixteen_mo ]]
+    if chain == 'vertical'
       possible_matches.each do |match|
-        if format_division[1].include? match.format
-          @possible_matches -= [match]
+        if format_groups[1].include? match.format
+          possible_matches.delete match
         end
       end
-    elsif chain.include? 'h'
+    elsif chain == 'horizontal'
       possible_matches.each do |match|
-        if format_division[0].include? match.format
-          @possible_matches -= [match]
+        if format_groups[0].include? match.format
+          possible_matches.delete match
         end
       end
     end
@@ -89,20 +75,32 @@ class PaperSizer
   end
 
   def query_edge deckle
-    deckle_meaning = {'yes' => :chancery, 'no' => :mezzo_median}
+    return possible_matches unless deckle == 'yes'
+    names = []
     possible_matches.each do |match|
-      if match.name == deckle_meaning[deckle]
-        @possible_matches -= [match]
+      unless names.include? match.name
+        names << match.name
+      end
+    end
+    if names.include?(:median) && names.include?(:chancery)
+      possible_matches.each do |match|
+        if match.name == :median
+          possible_matches.delete match
+        end
+      end
+    elsif names.include?(:chancery) && names.include?(:mezzo_median)
+      possible_matches.each do |match|
+        if match.name == :chancery
+          possible_matches.delete match
+        end
       end
     end
     possible_matches
   end
 
-  def compare_matches
-  #something wrong with eg. 12.0h, 8.7w [nil/horizontal]-chain lines
-  #should be able to handle 3 matches or none.
-    size_0 = possible_matches[0].height_max + possible_matches[0].height_min
-    size_1 = possible_matches[1].height_max + possible_matches[1].height_min
+  def compare_two_matches
+    size_0 = possible_matches[0].height_max + possible_matches[0].height_min + possible_matches[0].width_max + possible_matches[0].width_min
+    size_1 = possible_matches[1].height_max + possible_matches[1].height_min + possible_matches[1].width_max + possible_matches[1].width_min
     if size_0 > size_1
       bigger  = possible_matches[0]
       smaller = possible_matches[1]

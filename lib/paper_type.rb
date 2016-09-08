@@ -16,10 +16,15 @@ class PaperType
   end
 
   def to_s
-    output_name
+    translate_name
   end
 
-  def output_name
-    "#{format} #{name}".upcase.gsub('_' , '-').sub('SIXTEEN-MO' , '16mo').sub((/MEDIAN-[12]/), 'MEDIAN')
+  def translate_name
+    "#{name} #{format}".upcase.gsub('_' , '-').sub('SIXTEEN-MO' , '16mo').sub((/MEDIAN-[12]/), 'MEDIAN')
+  end
+
+  def == other
+    return false unless other.is_a?(PaperType)
+    self.format == other.format && self.name == other.name
   end
 end

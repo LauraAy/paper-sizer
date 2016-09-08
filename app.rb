@@ -14,8 +14,8 @@ post '/sizeit' do
   width  = params["paper_width"]
   chain  = params["chain_lines"]
   deckle = params["deckle"]
-  sizer = PaperSizer.new
 
+  sizer = PaperSizer.new
   matches  = sizer.find_matches height, width
   if matches.length == 0
     result = "Those dimensions don't match any known paper size."
@@ -29,8 +29,10 @@ post '/sizeit' do
       matches = sizer.query_edge deckle
       if matches.length == 1
         result = "#{matches[0]}"
+      elsif matches.length == 2
+        result = sizer.compare_two_matches
       else
-        result = sizer.compare_matches
+        result = "It could be one of these three: #{matches[0]}, #{matches[1]}, or #{matches[2]}"
       end
     end
   end
