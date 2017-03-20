@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Paper height:</strong>
+  <%= @paper.paper_height %>
+</p>
+
+<p>
+  <strong>Paper width:</strong>
+  <%= @paper.paper_width %>
+</p>
+
+<p>
+  <strong>Chain lines:</strong>
+  <%= @paper.chain_lines %>
+</p>
+
+<p>
+  <strong>Format:</strong>
+  <%= @paper.format %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @paper.name %>
+</p>
+
+<p>
+  <strong>Result:</strong>
+  <%= @paper.result %>
+</p>
+
+<%= link_to 'Edit', edit_paper_path(@paper) %> |
+<%= link_to 'Back', papers_path %>

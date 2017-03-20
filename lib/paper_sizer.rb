@@ -1,6 +1,6 @@
 require 'lib/paper_type'
 
-class PaperSizer
+#class PaperSizer
 
   PAPER_SIZES =
   [
@@ -110,4 +110,4 @@ class PaperSizer
     end
     "It's either a very large #{smaller} or a very cut-down #{bigger}." #given that #{more_common} is much more common than #{less_common}, it's probably a #{more_common}."
   end
-end
+#end

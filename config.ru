@@ -1,3 +1,2 @@
-require './app'
-
-run Sinatra::Application
+require ::File.expand_path('../config/environment', __FILE__)
+run Rails.application

@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Repository:</strong>
+  <%= @manuscript.repository %>
+</p>
+
+<p>
+  <strong>Call number:</strong>
+  <%= @manuscript.call_number %>
+</p>
+
+<p>
+  <strong>Ms format:</strong>
+  <%= @manuscript.ms_format %>
+</p>
+
+<%= link_to 'Edit', edit_manuscript_path(@manuscript) %> |
+<%= link_to 'Back', manuscripts_path %>
